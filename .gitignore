@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# ML-модели (большие бинарные файлы)
+assets/*.cbm
+assets/*.pkl
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Server output
+runserver.out
+runserver.err

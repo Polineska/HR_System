@@ -1,0 +1,23 @@
+﻿<div class="table-responsive">
+  <table class="table table-sm table-striped align-middle">
+    <thead>
+      <tr>
+        {% for col in table.columns %}
+          <th scope="col">{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in table.rows %}
+        <tr>
+          {% for cell in row %}
+            <td>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      {% if not table.rows %}
+        <tr><td colspan="{{ table.columns|length }}" class="text-muted">Нет данных.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,97 @@
+﻿{% extends "analytics_app/base.html" %}
+{% block title %}Индивидуальный анализ{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">Прогноз для сотрудника</h1>
+
+  <form method="post" class="card mb-4">
+    <div class="card-body">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <h2 class="h6">Основные параметры</h2>
+          {{ form.gender.label_tag }} {{ form.gender }}
+          <div class="mt-2">{{ form.company_type.label_tag }} {{ form.company_type }}</div>
+          <div class="mt-2">{{ form.wfh.label_tag }} {{ form.wfh }}</div>
+          <div class="mt-2">{{ form.designation.label_tag }} {{ form.designation }}</div>
+          <div class="mt-2">
+            {{ form.resource_allocation.label_tag }} {{ form.resource_allocation }}
+            {% if form.resource_allocation.help_text %}<div class="form-text">{{ form.resource_allocation.help_text }}</div>{% endif %}
+          </div>
+          <div class="mt-2">{{ form.mental_fatigue.label_tag }} {{ form.mental_fatigue }}</div>
+          <div class="mt-2">{{ form.days_employed.label_tag }} {{ form.days_employed }}</div>
+        </div>
+
+        <div class="col-lg-6">
+          <h2 class="h6">Личные данные</h2>
+          {{ form.education.label_tag }} {{ form.education }}
+          <div class="mt-2">{{ form.city.label_tag }} {{ form.city }}</div>
+          <div class="mt-2">{{ form.payment_tier.label_tag }} {{ form.payment_tier }}</div>
+          <div class="mt-2">{{ form.age.label_tag }} {{ form.age }}</div>
+          <div class="mt-2">{{ form.joining_year.label_tag }} {{ form.joining_year }}</div>
+          <div class="mt-2">{{ form.experience_years.label_tag }} {{ form.experience_years }}</div>
+          <div class="mt-2">{{ form.ever_benched.label_tag }} {{ form.ever_benched }}</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary mt-3" type="submit">Провести комплексный анализ</button>
+    </div>
+  </form>
+
+  {% if result %}
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card"><div class="card-body">
+          <div class="text-muted">Уровень выгорания</div>
+          <div class="h3 mb-1">{{ result.burnout_score|floatformat:2 }}</div>
+          <div class="progress" role="progressbar"
+               aria-label="Уровень выгорания"
+               aria-valuenow="{{ burnout_pct }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-danger" style="width:{{ burnout_pct }}%"></div>
+          </div>
+          <div class="mt-2">
+            {% if result.burnout_score > 0.6 %}
+              <div class="alert alert-danger mb-0">Критический риск выгорания!</div>
+            {% else %}
+              <div class="alert alert-success mb-0">Уровень выгорания в норме.</div>
+            {% endif %}
+          </div>
+        </div></div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card"><div class="card-body">
+          <div class="text-muted">Риск увольнения</div>
+          <div class="h3 mb-1">{{ leave_pct }}%</div>
+          <div class="progress" role="progressbar"
+               aria-label="Риск увольнения"
+               aria-valuenow="{{ leave_pct }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-warning" style="width:{{ leave_pct }}%"></div>
+          </div>
+          <div class="mt-2">
+            {% if result.leave_proba > 0.5 %}
+              <div class="alert alert-warning mb-0">Высокая вероятность увольнения.</div>
+            {% else %}
+              <div class="alert alert-success mb-0">Лояльность в норме.</div>
+            {% endif %}
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="card mb-3"><div class="card-body">
+      <h2 class="h6">Рекомендации</h2>
+      {% if result.recommendations %}
+        <ul class="mb-0">
+          {% for r in result.recommendations %}
+            <li>{{ r }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="alert alert-success mb-0">Аномалий не выявлено.</div>
+      {% endif %}
+    </div></div>
+
+    {% if report_ready %}
+      <a class="btn btn-outline-secondary" href="{% url 'download_report' %}">Скачать текстовый отчет</a>
+    {% endif %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,286 @@
+{% extends "analytics_app/base.html" %}
+{% block title %}Дашборд — HR Analytics{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="h4 fw-semibold mb-1">Дашборд HR-аналитики</h1>
+    <div class="text-muted small">
+      {% if active_leave_dataset %}
+        Датасет:&nbsp;<span class="fw-medium text-body">{{ active_leave_dataset.name }}</span>
+        <span class="text-muted">&nbsp;·&nbsp;{{ active_leave_dataset.created_at|date:"d.m.Y" }}</span>
+      {% else %}
+        Датасет не выбран&nbsp;—&nbsp;<a href="{% url 'datasets' %}">загрузить</a>
+      {% endif %}
+    </div>
+  </div>
+  <a class="btn btn-sm btn-outline-primary" href="{% url 'datasets' %}">Сменить датасет</a>
+</div>
+
+{% if not active_leave_dataset %}
+  <div class="alert alert-info mb-4">
+    Датасет не выбран. <a href="{% url 'datasets' %}" class="alert-link">Загрузите датасет</a>, чтобы увидеть метрики компании.
+  </div>
+{% endif %}
+
+<div class="row g-3 mb-3">
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Всего сотрудников</p>
+        <p class="display-6 fw-bold mb-0">{{ metrics.employees|default:"—" }}</p>
+        <p class="text-muted small mb-0">в активном датасете</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Средний возраст</p>
+        <p class="display-6 fw-bold mb-0">
+          {% if metrics.avg_age is not None %}{{ metrics.avg_age }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">лет по команде</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Средний стаж</p>
+        <p class="display-6 fw-bold mb-0">
+          {% if metrics.avg_experience is not None %}{{ metrics.avg_experience }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">лет опыта в домене</p>
+      </div>
+    </div>
+  </div>
+
+  <!--<div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Исторический Turnover</p>
+        <p class="display-6 fw-bold mb-0">
+          {% if metrics.turnover_pct is not None %}{{ metrics.turnover_pct }}%{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">ушли (LeaveOrNot)</p>
+      </div>
+    </div>
+  </div> -->
+
+</div>
+
+
+<div class="row g-3 mb-4">
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #DC2626 !important;">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Высокий риск ухода</p>
+        <p class="display-6 fw-bold text-danger mb-0">
+          {% if last_leave and last_leave.summary %}{{ last_leave.summary.high }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">
+          {% if last_leave and last_leave.report %}отчёт {{ last_leave.report.created_at|date:"d.m.Y" }}{% else %}нет отчёта{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #D97706 !important;">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Средний риск ухода</p>
+        <p class="display-6 fw-bold mb-0" style="color:#D97706;">
+          {% if last_leave and last_leave.summary %}{{ last_leave.summary.medium }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">
+          {% if last_leave and last_leave.report %}отчёт {{ last_leave.report.created_at|date:"d.m.Y" }}{% else %}нет отчёта{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #16A34A !important;">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Низкий риск ухода</p>
+        <p class="display-6 fw-bold text-success mb-0">
+          {% if last_leave and last_leave.summary %}{{ last_leave.summary.low }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">
+          {% if last_leave and last_leave.report %}отчёт {{ last_leave.report.created_at|date:"d.m.Y" }}{% else %}нет отчёта{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #DC2626 !important;">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Критич. выгорание</p>
+        <p class="display-6 fw-bold text-danger mb-0">
+          {% if last_burn and last_burn.summary %}{{ last_burn.summary.critical }}{% else %}—{% endif %}
+        </p>
+        <p class="text-muted small mb-0">
+          {% if last_burn and last_burn.report %}отчёт {{ last_burn.report.created_at|date:"d.m.Y" }}{% else %}нет отчёта{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12"><p class="text-muted small fw-medium mb-0 text-uppercase" style="letter-spacing:.05em;">Структура персонала</p></div>
+
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body pb-1">
+        {% if charts.geo %}
+          {{ charts.geo|safe }}
+        {% else %}
+          <div class="text-muted small py-5 text-center">Нет данных (колонка City)</div>
+        {% endif %}
+        <p class="text-muted mb-2" style="font-size:.73rem;">
+          Распределение по офисам — основа для планирования нагрузки HR Business Partners и запуска локальных программ удержания.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body pb-1">
+        {% if charts.tiers %}
+          {{ charts.tiers|safe }}
+        {% else %}
+          <div class="text-muted small py-5 text-center">Нет данных (колонка PaymentTier)</div>
+        {% endif %}
+        <p class="text-muted mb-2" style="font-size:.73rem;">
+          <strong>Tier 3 (низкий)</strong> напрямую используется ML-моделью как фактор риска ухода. Большая доля Tier 3 — системный зарплатный риск.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row g-3 mb-3">
+  <div class="col-12"><p class="text-muted small fw-medium mb-0 text-uppercase" style="letter-spacing:.05em;">Демография и найм</p></div>
+
+  <div class="col-lg-5">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body pb-1">
+        {% if charts.gender %}
+          {{ charts.gender|safe }}
+        {% else %}
+          <div class="text-muted small py-5 text-center">Нет данных (колонка Gender)</div>
+        {% endif %}
+        <p class="text-muted mb-2" style="font-size:.73rem;">
+          Гендерный баланс — базовый D&I-показатель и маркер инклюзивности корпоративной культуры.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body pb-1">
+        {% if charts.hiring %}
+          {{ charts.hiring|safe }}
+        {% else %}
+          <div class="text-muted small py-5 text-center">Нет данных (колонка JoiningYear)</div>
+        {% endif %}
+        <p class="text-muted mb-2" style="font-size:.73rem;">
+          Большие когорты одного года — риск «волны уходов»: сотрудники одного набора нередко уходят одновременно при изменении рыночной конъюнктуры.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row g-3 mb-4">
+  <div class="col-12"><p class="text-muted small fw-medium mb-0 text-uppercase" style="letter-spacing:.05em;">Опыт и отчёты</p></div>
+
+  <div class="col-lg-7">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body pb-1">
+        {% if charts.experience %}
+          {{ charts.experience|safe }}
+        {% else %}
+          <div class="text-muted small py-5 text-center">Нет данных (колонка ExperienceInCurrentDomain)</div>
+        {% endif %}
+        <p class="text-muted mb-2" style="font-size:.73rem;">
+          Junior-heavy структура (0–2 года) требует усиления онбординга и менторства. Высокая концентрация на одной отметке может указывать на кадровый застой.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 fw-semibold mb-3">Последние отчёты</h2>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-medium small">Увольнения</span>
+            {% if last_leave and last_leave.report %}
+              <a class="btn btn-sm btn-outline-secondary py-0" href="{% url 'download_csv_report' last_leave.report.id %}">CSV</a>
+            {% endif %}
+          </div>
+          {% if last_leave and last_leave.summary %}
+            <div class="text-muted small mb-1">{{ last_leave.report.created_at|date:"d.m.Y H:i" }}</div>
+            <div class="d-flex gap-1 flex-wrap">
+              <span class="badge bg-danger">Высокий: {{ last_leave.summary.high }}</span>
+              <span class="badge text-dark" style="background:#D97706;">Средний: {{ last_leave.summary.medium }}</span>
+              <span class="badge bg-success">Низкий: {{ last_leave.summary.low }}</span>
+            </div>
+            <div class="progress mt-2" style="height:6px;" title="Доля по категориям риска"
+                 role="progressbar" aria-label="Распределение риска" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar bg-danger" style="width:{{ last_leave.summary.high_pct }}%"></div>
+              <div class="progress-bar" style="width:{{ last_leave.summary.medium_pct }}%;background:#D97706;"></div>
+              <div class="progress-bar bg-success" style="width:{{ last_leave.summary.low_pct }}%"></div>
+            </div>
+          {% elif last_leave and last_leave.error %}
+            <div class="text-muted small">{{ last_leave.error }}</div>
+          {% else %}
+            <div class="text-muted small">Нет отчётов — запустите <a href="{% url 'monitoring' %}">мониторинг</a></div>
+          {% endif %}
+        </div>
+
+        <hr class="my-2">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-medium small">Выгорание</span>
+            {% if last_burn and last_burn.report %}
+              <a class="btn btn-sm btn-outline-secondary py-0" href="{% url 'download_csv_report' last_burn.report.id %}">CSV</a>
+            {% endif %}
+          </div>
+          {% if last_burn and last_burn.summary %}
+            <div class="text-muted small mb-1">{{ last_burn.report.created_at|date:"d.m.Y H:i" }}</div>
+            <span class="badge bg-danger">Критическое (&gt;0.6): {{ last_burn.summary.critical }}</span>
+          {% elif last_burn and last_burn.error %}
+            <div class="text-muted small">{{ last_burn.error }}</div>
+          {% else %}
+            <div class="text-muted small">Нет отчётов — запустите <a href="{% url 'monitoring' %}">мониторинг</a></div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex gap-2 mt-3 flex-wrap">
+          <a href="{% url 'monitoring' %}" class="btn btn-sm btn-primary">Запустить анализ</a>
+          <a href="{% url 'individual' %}" class="btn btn-sm btn-outline-secondary">Индивидуальный</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

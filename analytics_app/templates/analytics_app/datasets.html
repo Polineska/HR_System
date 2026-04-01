@@ -1,0 +1,105 @@
+﻿{% extends "analytics_app/base.html" %}
+{% block title %}Датасеты{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Датасеты</h1>
+    <a class="btn btn-outline-secondary" href="{% url 'monitoring' %}">Перейти к мониторингу</a>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h2 class="h6">Загрузить новый датасет</h2>
+      <form method="post" enctype="multipart/form-data" class="row g-3">
+        {% csrf_token %}
+        <div class="col-md-3">
+          {{ form.kind.label_tag }}
+          {{ form.kind }}
+        </div>
+        <div class="col-md-5">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          <div class="form-text">Можно не заполнять — будет имя файла.</div>
+        </div>
+        <div class="col-md-4">
+          {{ form.file.label_tag }}
+          {{ form.file }}
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Загрузить и сделать активным</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h6">Увольнения (Leave)</h2>
+          {% if leave_sets %}
+            <div class="list-group">
+              {% for ds in leave_sets %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-semibold">{{ ds.name }}</div>
+                    <div class="text-muted small">{{ ds.created_at|date:"d.m.Y H:i" }}</div>
+                    {% if ds.is_active %}<span class="badge text-bg-success">Активный</span>{% endif %}
+                  </div>
+                  <div class="d-flex gap-2">
+                    {% if not ds.is_active %}
+                      <form method="post" action="{% url 'dataset_set_active' ds.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Сделать активным</button>
+                      </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'dataset_delete' ds.id %}" onsubmit="return confirm('Удалить датасет?');">
+                      {% csrf_token %}
+                      <button class="btn btn-sm btn-outline-danger" type="submit">Удалить</button>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-muted">Датасетов пока нет.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h6">Выгорание (Burnout)</h2>
+          {% if burnout_sets %}
+            <div class="list-group">
+              {% for ds in burnout_sets %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-semibold">{{ ds.name }}</div>
+                    <div class="text-muted small">{{ ds.created_at|date:"d.m.Y H:i" }}</div>
+                    {% if ds.is_active %}<span class="badge text-bg-success">Активный</span>{% endif %}
+                  </div>
+                  <div class="d-flex gap-2">
+                    {% if not ds.is_active %}
+                      <form method="post" action="{% url 'dataset_set_active' ds.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Сделать активным</button>
+                      </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'dataset_delete' ds.id %}" onsubmit="return confirm('Удалить датасет?');">
+                      {% csrf_token %}
+                      <button class="btn btn-sm btn-outline-danger" type="submit">Удалить</button>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-muted">Датасетов пока нет.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

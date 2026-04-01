@@ -1,0 +1,7 @@
+﻿{% extends "analytics_app/base.html" %}
+{% block title %}Ошибка{% endblock %}
+{% block content %}
+  <h1 class="h4">Ошибка загрузки данных/моделей</h1>
+  <div class="alert alert-danger">{{ error }}</div>
+  <p class="text-muted mb-0">Проверьте, что файлы моделей и CSV лежат в <code>assets/</code> (или в корне проекта).</p>
+{% endblock %}
