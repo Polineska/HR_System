@@ -13,10 +13,6 @@ env/
 db.sqlite3
 media/
 
-# ML-модели (большие бинарные файлы)
-assets/*.cbm
-assets/*.pkl
-
 # IDE
 .idea/
 
