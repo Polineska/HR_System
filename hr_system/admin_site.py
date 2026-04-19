@@ -1,7 +1,5 @@
 ﻿from __future__ import annotations
-
 from django.contrib.admin import AdminSite
-
 
 class HRAdminSite(AdminSite):
     site_header = "HR Data-Driven System — Admin"
