@@ -29,7 +29,6 @@ class HRDataset(models.Model):
 
 
 class UserSessionUpload(models.Model):
-    # Legacy: оставлено для совместимости/истории. Новая логика использует HRDataset.
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     session_key = models.CharField(max_length=64, db_index=True)
@@ -54,7 +53,6 @@ class CsvReport(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     dataset = models.ForeignKey(HRDataset, on_delete=models.SET_NULL, null=True, blank=True)
-    # session_key оставляем nullable для обратной совместимости
     session_key = models.CharField(max_length=64, db_index=True, null=True, blank=True)
     kind = models.CharField(max_length=16, choices=Kind.choices)
     file = models.FileField(upload_to="reports/%Y/%m/%d/")

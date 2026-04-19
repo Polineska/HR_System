@@ -99,7 +99,7 @@ def _latest_report_summary(*, user, kind: str) -> dict | None:
         with report.file.open("rb") as f:
             df = pd.read_csv(f)
     except Exception:
-        return {"report": report, "error": "Не удалось прочитать файл отчета."}
+        return {"report": report, "error": "Не удалось прочитать файл отчета"}
 
     if kind == CsvReport.Kind.LEAVE:
         prob = df.get("Risk_Prob", pd.Series(dtype=float))
@@ -205,7 +205,7 @@ def dataset_delete(request, dataset_id: uuid.UUID):
             latest.is_active = True
             latest.save(update_fields=["is_active"])
 
-    messages.info(request, "Датасет удален.")
+    messages.info(request, "Датасет удален")
     return redirect("datasets")
 
 
@@ -218,7 +218,7 @@ def dashboard(request):
         try:
             df = _read_dataset_csv(dataset)
         except Exception:
-            messages.warning(request, "Не удалось прочитать активный датасет Leave.")
+            messages.warning(request, "Не удалось прочитать активный датасет Leave")
 
     metrics = {
         "employees": None,
@@ -247,33 +247,32 @@ def dashboard(request):
             fig_city = px.bar(
                 cc, x="Офис", y="Сотрудников",
                 title="Сотрудники по офисам",
-                color_discrete_sequence=["#6366F1"],
+                color_discrete_sequence=["#4F05FB"],
                 text="Сотрудников",
             )
             fig_city.update_traces(textposition="auto")
             fig_city.update_yaxes(title_text="")
             charts["geo"] = _plot_html(fig_city)
 
-        # График 2: Структура компенсаций (с понятными подписями)
+        # График 2: Зарплата
         if "PaymentTier" in df.columns:
-            tier_label = {1: "Tier 1 — высокий", 2: "Tier 2 — средний", 3: "Tier 3 — низкий"}
+            tier_label = {1: "Высокий", 2: "Средний", 3: "Низкий"}
             tier_color = {
-                "Tier 1 — высокий": "#16A34A",
-                "Tier 2 — средний": "#D97706",
-                "Tier 3 — низкий": "#DC2626",
+                "Высокий": "#AFFCCB",
+                "Средний": "#FECE98",
+                "Низкий": "#FF8888",
             }
             df_t = df.copy()
             df_t["Уровень"] = df_t["PaymentTier"].map(tier_label)
             tc = df_t["Уровень"].value_counts().reset_index()
             tc.columns = ["Уровень", "Кол-во"]
-            # Фиксируем порядок: высокий → средний → низкий
             tc["_order"] = tc["Уровень"].map(
-                {"Tier 1 — высокий": 0, "Tier 2 — средний": 1, "Tier 3 — низкий": 2}
+                {"Высокий": 0, "Средний": 1, "Низкий": 2}
             )
             tc = tc.sort_values("_order").drop(columns="_order")
             fig_tier = px.bar(
                 tc, x="Уровень", y="Кол-во",
-                title="Структура компенсаций",
+                title="Уровень оплаты",
                 color="Уровень",
                 color_discrete_map=tier_color,
                 text="Кол-во",
@@ -283,15 +282,15 @@ def dashboard(request):
             fig_tier.update_yaxes(title_text="")
             charts["tiers"] = _plot_html(fig_tier)
 
-        # График 3: Гендерный баланс
+        # График 3: Распределение по полу
         if "Gender" in df.columns:
             gc = df["Gender"].value_counts().reset_index()
             gc.columns = ["Пол", "Кол-во"]
             charts["gender"] = _plot_html(
                 px.pie(
                     gc, names="Пол", values="Кол-во", hole=0.5,
-                    title="Гендерный баланс",
-                    color_discrete_sequence=["#3B82F6", "#F472B6"],
+                    title="Распределение по полу",
+                    color_discrete_sequence=["#AAC8F8", "#FA93C8"],
                 )
             )
 
@@ -302,7 +301,7 @@ def dashboard(request):
             fig_hire = px.bar(
                 yc, x="Год", y="Нанято",
                 title="Динамика найма по годам",
-                color_discrete_sequence=["#8B5CF6"],
+                color_discrete_sequence=["#4F05FB"],
                 text="Нанято",
             )
             fig_hire.update_traces(textposition="auto")
@@ -314,9 +313,9 @@ def dashboard(request):
         if "ExperienceInCurrentDomain" in df.columns:
             fig_exp = px.histogram(
                 df, x="ExperienceInCurrentDomain",
-                title="Профиль опыта сотрудников",
-                color_discrete_sequence=["#10B981"],
-                labels={"ExperienceInCurrentDomain": "Лет опыта в домене", "count": "Кол-во"},
+                title="Опыт сотрудников",
+                color_discrete_sequence=["#4F05FB"],
+                labels={"ExperienceInCurrentDomain": "Кол-во лет опыта", "count": "Кол-во"},
             )
             fig_exp.update_traces(marker_line_width=0.5, marker_line_color="white")
             fig_exp.update_xaxes(dtick=1)
@@ -461,7 +460,7 @@ def _prepare_burnout_context(request, df: pd.DataFrame, dataset: HRDataset | Non
     hist = px.histogram(
         df,
         x="Burn_Pred",
-        color_discrete_sequence=["#FF4B4B"],
+        color_discrete_sequence=["#0328FB"],
         title="Распределение выгорания",
     )
     top = df[df["Burn_Pred"] > BURNOUT_CRITICAL_THRESHOLD].sort_values(
@@ -515,7 +514,7 @@ def mass_monitoring(request):
 
                     if not dataset_for_run:
                         raise ValueError(
-                            "Нет активного датасета Leave. Загрузите CSV в разделе 'Датасеты'."
+                            "Нет активного датасета Leave. Загрузите CSV в разделе 'Датасеты'"
                         )
 
                     df_src = _read_dataset_csv(dataset_for_run)
@@ -533,7 +532,7 @@ def mass_monitoring(request):
 
                     if not dataset_for_run:
                         raise ValueError(
-                            "Нет активного датасета Burnout. Загрузите CSV в разделе 'Датасеты'."
+                            "Нет активного датасета Burnout. Загрузите CSV в разделе 'Датасеты'"
                         )
 
                     df_src = _read_dataset_csv(dataset_for_run)
@@ -580,11 +579,11 @@ def _importance_charts(assets) -> dict:
                     y="Фактор",
                     orientation="h",
                     title="Что влияет на увольнение",
-                    color_discrete_sequence=["#31333F"],
+                    color_discrete_sequence=["#0328FB"],
                 )
             )
     except Exception:
-        out["leave_error"] = "Не удалось построить график важности для увольнений."
+        out["leave_error"] = "Не удалось построить график важности для увольнений"
 
     try:
         b_feats = [
@@ -605,11 +604,11 @@ def _importance_charts(assets) -> dict:
                 y="Фактор",
                 orientation="h",
                 title="Что влияет на выгорание",
-                color_discrete_sequence=["#FF4B4B"],
+                color_discrete_sequence=["#0328FB"],
             )
         )
     except Exception:
-        out["burnout_error"] = "Не удалось построить график важности для выгорания."
+        out["burnout_error"] = "Не удалось построить график важности для выгорания"
 
     return out
 
