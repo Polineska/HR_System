@@ -90,7 +90,7 @@ def remove_hr_admin(modeladmin, request, queryset):
 
 
 make_hr.short_description = "Добавить в группу HR (доступ в приложение)"
-make_hr_admin_staff.short_description = "Сделать HR_ADMIN + дать доступ в админку (is_staff)"
+make_hr_admin_staff.short_description = "Сделать HR_ADMIN + дать доступ в админку"
 remove_hr.short_description = "Убрать из группы HR"
 remove_hr_admin.short_description = "Убрать из группы HR_ADMIN"
 
