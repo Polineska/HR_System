@@ -73,33 +73,33 @@ def predict_individual(*, model_burnout, model_leave, inputs: dict) -> Individua
 
     if leave_proba > 0.8:
         recommendations.append(
-            "🔴 Критический риск ухода: нужна индивидуальная встреча в течение 24 часов."
+            "🔴 Критический риск ухода: нужна индивидуальная встреча в течение 24 часов"
         )
     elif leave_proba > 0.5:
-        recommendations.append("🟡 Умеренный риск ухода: провести интервью и пересмотреть KPI.")
+        recommendations.append("🟡 Умеренный риск ухода: провести интервью и пересмотреть KPI")
     elif leave_proba > 0.3:
-        recommendations.append("🟢 Низкий риск: стандартный мониторинг, плановый опрос.")
+        recommendations.append("🟢 Низкий риск: стандартный мониторинг, плановый опрос")
 
     if burnout_score > 0.7:
         recommendations.append(
-            "Высокое выгорание: нужен отпуск/смена задач, риск критических ошибок."
+            "Высокое выгорание: нужен отпуск/смена задач, риск критических ошибок"
         )
     elif burnout_score > 0.4:
-        recommendations.append("⚠️ Начало деструкции: проверить Work‑Life баланс.")
+        recommendations.append("Начало деструкции: проверить Work‑Life баланс")
 
     if inputs["payment_tier"] == 3 and leave_proba > 0.4:
         recommendations.append(
-            "💸 Зарплатный фактор: низкий уровень оплаты (3), проверьте соответствие рынку."
+            "Зарплатный фактор: низкий уровень оплаты (3), проверьте соответствие рынку"
         )
 
     if inputs["experience_years"] < 2 and leave_proba > 0.6:
-        recommendations.append("🐣 Адаптация: может не хватать менторской поддержки.")
+        recommendations.append("Адаптация: может не хватать менторской поддержки")
 
     if inputs["ever_benched"] == "Yes":
-        recommendations.append("📉 Фактор простоя: Bench снижает лояльность, вовлеките в проект.")
+        recommendations.append("Фактор простоя: Bench снижает лояльность, вовлеките в проект")
 
     if inputs["wfh"] == "No" and burnout_score > 0.5:
-        recommendations.append("🏠 Гибкость: рассмотрите гибридный график.")
+        recommendations.append("Гибкость: рассмотрите гибридный график")
 
     return IndividualResult(
         burnout_score=burnout_score,
