@@ -18,7 +18,7 @@
         <div class="col-md-5">
           {{ form.name.label_tag }}
           {{ form.name }}
-          <div class="form-text">Можно не заполнять — будет имя файла.</div>
+          <div class="form-text">При не заполнении будет использовано имя файла</div>
         </div>
         <div class="col-md-4">
           {{ form.file.label_tag }}
@@ -35,7 +35,7 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
-          <h2 class="h6">Увольнения (Leave)</h2>
+          <h2 class="h6">Увольнения</h2>
           {% if leave_sets %}
             <div class="list-group">
               {% for ds in leave_sets %}
@@ -61,7 +61,7 @@
               {% endfor %}
             </div>
           {% else %}
-            <div class="text-muted">Датасетов пока нет.</div>
+            <div class="text-muted">Датасетов пока нет</div>
           {% endif %}
         </div>
       </div>
@@ -70,7 +70,7 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
-          <h2 class="h6">Выгорание (Burnout)</h2>
+          <h2 class="h6">Выгорание</h2>
           {% if burnout_sets %}
             <div class="list-group">
               {% for ds in burnout_sets %}
@@ -96,7 +96,7 @@
               {% endfor %}
             </div>
           {% else %}
-            <div class="text-muted">Датасетов пока нет.</div>
+            <div class="text-muted">Датасетов пока нет</div>
           {% endif %}
         </div>
       </div>

@@ -9,7 +9,7 @@
   <div class="row g-3 mb-4">
     <div class="col-lg-6">
       <div class="card"><div class="card-body">
-        <div class="text-muted">Активный датасет Leave</div>
+        <div class="text-muted">Активный датасет увольнений</div>
         {% if active_leave_dataset %}
           <div class="fw-semibold">{{ active_leave_dataset.name }}</div>
           <div class="text-muted small">{{ active_leave_dataset.created_at|date:"d.m.Y H:i" }}</div>
@@ -20,7 +20,7 @@
     </div>
     <div class="col-lg-6">
       <div class="card"><div class="card-body">
-        <div class="text-muted">Активный датасет Burnout</div>
+        <div class="text-muted">Активный датасет выгорания</div>
         {% if active_burnout_dataset %}
           <div class="fw-semibold">{{ active_burnout_dataset.name }}</div>
           <div class="text-muted small">{{ active_burnout_dataset.created_at|date:"d.m.Y H:i" }}</div>
@@ -35,7 +35,7 @@
     <div class="card-body">
       {% csrf_token %}
       <p class="text-muted mb-3">
-        Можно запустить анализ на активном датасете. Если прикрепить CSV ниже — он будет сохранен как новый датасет и станет активным для выбранного анализа.
+        Если прикрепить файл, то он будет сохранен,как новый датасет и станет активным для выбранного анализа
       </p>
 
       <div class="row g-3">
@@ -52,7 +52,7 @@
 
       <div class="d-flex gap-2 mt-3">
         <button class="btn btn-primary" name="action" value="leave" type="submit">Запустить анализ увольнений</button>
-        <button class="btn btn-danger" name="action" value="burnout" type="submit">Запустить анализ выгорания</button>
+        <button class="btn btn-primary" name="action" value="burnout" type="submit">Запустить анализ выгорания</button>
       </div>
     </div>
   </form>
@@ -61,7 +61,7 @@
     <div class="card mb-4"><div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="h6 mb-0">Результаты: увольнения</h2>
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'download_csv_report' leave.report_id %}">Скачать отчет (Leave)</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'download_csv_report' leave.report_id %}">Скачать отчет увольнений</a>
       </div>
       <div class="mt-3">{{ leave.chart|safe }}</div>
       <h3 class="h6 mt-3">Группа риска (&gt;70%)</h3>
@@ -73,7 +73,7 @@
     <div class="card mb-4"><div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="h6 mb-0">Результаты: выгорание</h2>
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'download_csv_report' burnout.report_id %}">Скачать отчет (Burnout)</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'download_csv_report' burnout.report_id %}">Скачать отчет выгорания</a>
       </div>
       <div class="mt-3">{{ burnout.chart|safe }}</div>
       <h3 class="h6 mt-3">Критическое выгорание (&gt;0.6)</h3>
