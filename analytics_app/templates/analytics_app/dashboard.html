@@ -20,7 +20,7 @@
 
 {% if not active_leave_dataset %}
   <div class="alert alert-info mb-4">
-    Датасет не выбран. <a href="{% url 'datasets' %}" class="alert-link">Загрузите датасет</a>, чтобы увидеть метрики компании.
+    Датасет не выбран. <a href="{% url 'datasets' %}" class="alert-link">Загрузите датасет</a>, чтобы увидеть метрики компании
   </div>
 {% endif %}
 
@@ -147,7 +147,7 @@
           <div class="text-muted small py-5 text-center">Нет данных (колонка City)</div>
         {% endif %}
         <p class="text-muted mb-2" style="font-size:.73rem;">
-          Распределение по офисам — основа для планирования нагрузки HR Business Partners и запуска локальных программ удержания.
+          Распределение по офисам основа для планирования нагрузки HR BP и запуска локальных программ удержания
         </p>
       </div>
     </div>
@@ -162,7 +162,7 @@
           <div class="text-muted small py-5 text-center">Нет данных (колонка PaymentTier)</div>
         {% endif %}
         <p class="text-muted mb-2" style="font-size:.73rem;">
-          <strong>Tier 3 (низкий)</strong> напрямую используется ML-моделью как фактор риска ухода. Большая доля Tier 3 — системный зарплатный риск.
+          <strong>Низкая зарплата</strong> возможно является фактором ухода, проверьте соответсвие рынку и внутреннюю справедливость оплаты в компании
         </p>
       </div>
     </div>
@@ -182,7 +182,7 @@
           <div class="text-muted small py-5 text-center">Нет данных (колонка Gender)</div>
         {% endif %}
         <p class="text-muted mb-2" style="font-size:.73rem;">
-          Гендерный баланс — базовый D&I-показатель и маркер инклюзивности корпоративной культуры.
+          Резкие перекосы требуют внимания HR и коммуникаций
         </p>
       </div>
     </div>
@@ -197,7 +197,7 @@
           <div class="text-muted small py-5 text-center">Нет данных (колонка JoiningYear)</div>
         {% endif %}
         <p class="text-muted mb-2" style="font-size:.73rem;">
-          Большие когорты одного года — риск «волны уходов»: сотрудники одного набора нередко уходят одновременно при изменении рыночной конъюнктуры.
+          Оценка эффективности HR-процессов 
         </p>
       </div>
     </div>
@@ -217,7 +217,7 @@
           <div class="text-muted small py-5 text-center">Нет данных (колонка ExperienceInCurrentDomain)</div>
         {% endif %}
         <p class="text-muted mb-2" style="font-size:.73rem;">
-          Junior-heavy структура (0–2 года) требует усиления онбординга и менторства. Высокая концентрация на одной отметке может указывать на кадровый застой.
+          Оценка эффективности кадровой политики по развитию сотрудников
         </p>
       </div>
     </div>
